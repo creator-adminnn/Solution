@@ -498,42 +498,39 @@ function analizarNumeros() {
         );
 
 
-    // =============================================
+// =============================================
 // FILTRO 2
-// TOMAR SOLO LAS 3RAS DE LOS ÚLTIMOS 7 DÍAS
+// TOMAR LAS 3RAS DE LOS ÚLTIMOS 7 SORTEOS
+// DEL BLOQUE HISTÓRICO ANALIZADO
 // =============================================
 
-const fechaLimite7Dias = new Date(hoy);
 
-fechaLimite7Dias.setDate(
-    fechaLimite7Dias.getDate() - 6
-);
-
-
-const sorteos7Dias =
-    sorteos90Dias.filter(sorteo => {
-
-        const fecha =
-            new Date(
-                `${sorteo.fecha}T00:00:00`
-            );
-
-        return (
-            fecha >= fechaLimite7Dias &&
-            fecha <= hoy
-        );
-
-    });
+// Ordenamos los sorteos del más reciente al más antiguo
+const sorteosOrdenados =
+    [...sorteos90Dias].sort(
+        (a, b) =>
+            new Date(b.fecha) -
+            new Date(a.fecha)
+    );
 
 
+// Tomamos únicamente los 7 sorteos más recientes
+const ultimos7Sorteos =
+    sorteosOrdenados.slice(0, 7);
+
+
+// Sacamos solamente sus terceras
 const vistosTercera =
     new Set(
-        sorteos7Dias.map(
+        ultimos7Sorteos.map(
             sorteo => sorteo.tercera
         )
     );
 
 
+// De los números que sobrevivieron a 1ra y 2da,
+// quitamos únicamente los que aparecieron
+// como 3ra en esos últimos 7 sorteos
 const filtro2 =
     filtro1.filter(numero =>
 
@@ -583,8 +580,15 @@ const filtro2 =
     );
 
     console.log(
-        "3ras usadas últimos 7 días:",
-        sorteos7Dias.length
+        "Últimos 7 sorteos usados para 3ra:",
+        ultimos7Sorteos.length
+    );
+
+    console.log(
+        "3ras analizadas:",
+        ultimos7Sorteos.map(
+            sorteo => sorteo.tercera
+        )
     );
 
     console.log(
