@@ -578,8 +578,8 @@ const filtro2 =
     );
 
     console.log(
-        "Últimos 7 sorteos usados para 3ra:",
-        ultimos7Sorteos.length
+        "Últimos 30 sorteos usados para 3ra:",
+        ultimos30Sorteos.length
     );
 
     console.log(

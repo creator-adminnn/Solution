@@ -1,282 +1,629 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>LotoPredict</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
+
 
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <header class="topbar">
-      <div>
-        <span class="badge">ANÁLISIS ESTADÍSTICO</span>
-        <h1>LotoPredict</h1>
-        <p>Motor experimental de análisis de números</p>
+
+  <!-- =========================================
+       ENCABEZADO
+  ========================================== -->
+
+  <header class="topbar">
+
+    <div>
+
+      <span class="badge">
+        ANÁLISIS ESTADÍSTICO
+      </span>
+
+      <h1>
+        LotoPredict
+      </h1>
+
+      <p>
+        Motor experimental de análisis de números
+      </p>
+
+    </div>
+
+  </header>
+
+
+
+  <main class="container">
+
+
+    <!-- =========================================
+         RESUMEN
+    ========================================== -->
+
+    <section class="dashboard-grid">
+
+
+      <div class="stat-card">
+
+        <span>
+          Números posibles
+        </span>
+
+        <strong>
+          100
+        </strong>
+
+        <small>
+          00 al 99
+        </small>
+
       </div>
-    </header>
 
-    <main class="container">
 
-      <!-- RESUMEN -->
-      <section class="dashboard-grid">
+      <div class="stat-card">
 
-        <div class="stat-card">
-          <span>Números posibles</span>
-          <strong>100</strong>
-          <small>00 al 99</small>
+        <span>
+          Candidatos finales
+        </span>
+
+        <strong id="totalCandidatos">
+          0
+        </strong>
+
+        <small>
+          Resultado del análisis
+        </small>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <span>
+          Sorteos registrados
+        </span>
+
+        <strong id="totalSorteos">
+          0
+        </strong>
+
+        <small>
+          Historial disponible
+        </small>
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- =========================================
+         REGISTRAR RESULTADO
+    ========================================== -->
+
+    <section class="panel">
+
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-label">
+            HISTORIAL
+          </span>
+
+          <h2>
+            Registrar sorteo
+          </h2>
+
         </div>
 
-        <div class="stat-card">
-          <span>Candidatos finales</span>
-          <strong id="totalCandidatos">0</strong>
-          <small>Objetivo: 4 números</small>
+      </div>
+
+
+
+      <div class="form-grid">
+
+
+        <div class="field">
+
+          <label for="fechaSorteo">
+            Fecha
+          </label>
+
+          <input
+            type="date"
+            id="fechaSorteo"
+          >
+
         </div>
 
-        <div class="stat-card">
-          <span>Sorteos analizados</span>
-          <strong id="totalSorteos">0</strong>
-          <small>Historial registrado</small>
+
+
+        <div class="field">
+
+          <label for="primerPremio">
+            1er premio
+          </label>
+
+          <input
+            type="number"
+            id="primerPremio"
+            min="0"
+            max="99"
+            placeholder="00"
+          >
+
         </div>
 
-      </section>
 
 
-      <!-- REGISTRAR RESULTADO -->
-      <section class="panel">
+        <div class="field">
 
-        <div class="panel-header">
+          <label for="segundoPremio">
+            2do premio
+          </label>
+
+          <input
+            type="number"
+            id="segundoPremio"
+            min="0"
+            max="99"
+            placeholder="00"
+          >
+
+        </div>
+
+
+
+        <div class="field">
+
+          <label for="tercerPremio">
+            3er premio
+          </label>
+
+          <input
+            type="number"
+            id="tercerPremio"
+            min="0"
+            max="99"
+            placeholder="00"
+          >
+
+        </div>
+
+
+      </div>
+
+
+
+      <button
+        id="btnGuardarSorteo"
+        class="btn btn-primary"
+        type="button"
+      >
+        Guardar resultado
+      </button>
+
+
+    </section>
+
+
+
+    <!-- =========================================
+         MOTOR DE ANÁLISIS
+    ========================================== -->
+
+    <section class="panel">
+
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-label">
+            MOTOR
+          </span>
+
+          <h2>
+            Generar candidatos
+          </h2>
+
+        </div>
+
+      </div>
+
+
+
+      <div class="analysis-period">
+
+        <span>
+          Período automático de análisis
+        </span>
+
+        <strong>
+          Últimos 90 días
+        </strong>
+
+        <small>
+          Cada nuevo sorteo entra al análisis y los
+          resultados con más de 90 días dejan de afectar
+          los candidatos automáticamente.
+        </small>
+
+      </div>
+
+
+
+      <p class="description">
+
+        El sistema analiza los números del 00 al 99
+        utilizando los resultados registrados.
+
+      </p>
+
+
+
+      <div class="filter-box">
+
+
+        <div class="filter-row">
+
           <div>
-            <span class="section-label">HISTORIAL</span>
-            <h2>Registrar sorteo</h2>
-          </div>
-        </div>
 
-        <div class="form-grid">
+            <strong>
+              Filtro 1
+            </strong>
 
-          <div class="field">
-            <label for="fechaSorteo">Fecha</label>
-            <input type="date" id="fechaSorteo" />
-          </div>
+            <span>
+              Descartar números vistos en 1ra y 2da
+              durante los últimos 90 días.
+            </span>
 
-          <div class="field">
-            <label for="primerPremio">1er premio</label>
-            <input
-              type="number"
-              id="primerPremio"
-              min="0"
-              max="99"
-              placeholder="00"
-            />
           </div>
 
-          <div class="field">
-            <label for="segundoPremio">2do premio</label>
-            <input
-              type="number"
-              id="segundoPremio"
-              min="0"
-              max="99"
-              placeholder="00"
-            />
-          </div>
-
-          <div class="field">
-            <label for="tercerPremio">3er premio</label>
-            <input
-              type="number"
-              id="tercerPremio"
-              min="0"
-              max="99"
-              placeholder="00"
-            />
-          </div>
+          <span class="filter-status">
+            Activo
+          </span>
 
         </div>
 
-        <button id="btnGuardarSorteo" class="btn btn-primary">
-          Guardar resultado
+
+
+        <div class="filter-row">
+
+          <div>
+
+            <strong>
+              Filtro 2
+            </strong>
+
+            <span>
+              Comparar los restantes con las 3ras
+              de los últimos 30 sorteos.
+            </span>
+
+          </div>
+
+          <span class="filter-status">
+            Activo
+          </span>
+
+        </div>
+
+
+
+        <div class="filter-row">
+
+          <div>
+
+            <strong>
+              Filtro final
+            </strong>
+
+            <span>
+              Próxima variable de análisis.
+            </span>
+
+          </div>
+
+          <span class="filter-status pending">
+            Pendiente
+          </span>
+
+        </div>
+
+
+      </div>
+
+
+
+      <button
+        id="btnAnalizar"
+        class="btn btn-dark"
+        type="button"
+      >
+        Analizar números
+      </button>
+
+
+    </section>
+
+
+
+    <!-- =========================================
+         CANDIDATOS
+    ========================================== -->
+
+    <section class="panel">
+
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-label">
+            PREDICCIÓN
+          </span>
+
+          <h2>
+            Candidatos del día
+          </h2>
+
+        </div>
+
+      </div>
+
+
+
+      <div
+        id="candidateNumbers"
+        class="candidate-grid"
+      >
+
+        <div class="number-card empty">
+          --
+        </div>
+
+        <div class="number-card empty">
+          --
+        </div>
+
+        <div class="number-card empty">
+          --
+        </div>
+
+        <div class="number-card empty">
+          --
+        </div>
+
+      </div>
+
+
+
+      <div class="probability-box">
+
+        <span>
+          Cobertura actual
+        </span>
+
+        <strong id="coverageValue">
+          0%
+        </strong>
+
+        <small>
+          Porcentaje de números seleccionados
+          dentro del universo 00–99.
+        </small>
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- =========================================
+         HISTORIAL
+    ========================================== -->
+
+    <section class="panel">
+
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-label">
+            DATOS
+          </span>
+
+          <h2>
+            Últimos sorteos registrados
+          </h2>
+
+        </div>
+
+
+        <button
+          id="btnReset"
+          class="btn-reset"
+          type="button"
+        >
+          Reset
         </button>
 
-      </section>
+      </div>
 
 
-      <!-- MOTOR DE FILTRADO -->
-      <section class="panel">
 
-        <div class="panel-header">
-          <div>
-            <span class="section-label">MOTOR</span>
-            <h2>Generar candidatos</h2>
-          </div>
+      <div class="table-wrapper">
+
+
+        <table>
+
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Fecha
+              </th>
+
+              <th>
+                1ra
+              </th>
+
+              <th>
+                2da
+              </th>
+
+              <th>
+                3ra
+              </th>
+
+              <th>
+                Acción
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+
+          <tbody id="historialBody">
+
+            <tr class="empty-row">
+
+              <td colspan="5">
+                Todavía no hay sorteos registrados.
+              </td>
+
+            </tr>
+
+          </tbody>
+
+
+        </table>
+
+
+      </div>
+
+
+    </section>
+
+
+
+    <!-- =========================================
+         RENDIMIENTO
+    ========================================== -->
+
+    <section class="panel">
+
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-label">
+            PRUEBA
+          </span>
+
+          <h2>
+            Rendimiento del método
+          </h2>
+
         </div>
 
-        <div class="analysis-period">
-  <span>Período automático de análisis</span>
-  <strong>Últimos 90 días</strong>
-  <small>
-    Cada nuevo sorteo entra al análisis y los resultados con más de 90 días
-    dejan de afectar los candidatos automáticamente.
-  </small>
+      </div>
+
+
+
+      <div class="performance-grid">
+
+
+        <div class="performance-card">
+
+          <span>
+            Predicciones realizadas
+          </span>
+
+          <strong id="totalPredicciones">
+            0
+          </strong>
+
+        </div>
+
+
+
+        <div class="performance-card">
+
+          <span>
+            Aciertos
+          </span>
+
+          <strong id="totalAciertos">
+            0
+          </strong>
+
+        </div>
+
+
+
+        <div class="performance-card">
+
+          <span>
+            Tasa de acierto
+          </span>
+
+          <strong id="tasaAcierto">
+            0%
+          </strong>
+
+        </div>
+
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
 </div>
 
-        <p class="description">
-          El sistema analizará los números del 00 al 99 y aplicará los filtros
-          configurados usando los resultados históricos.
-        </p>
-
-        <div class="filter-box">
-
-          <div class="filter-row">
-            <div>
-              <strong>Filtro 1</strong>
-              <span>Descartar números vistos en 1ra y 2da</span>
-            </div>
-
-            <span class="filter-status">Activo</span>
-          </div>
-
-          <div class="filter-row">
-            <div>
-              <strong>Filtro 2</strong>
-              <span>Comparar restantes con resultados de 3ra</span>
-            </div>
-
-            <span class="filter-status">Activo</span>
-          </div>
-
-          <div class="filter-row">
-            <div>
-              <strong>Filtro final</strong>
-              <span>Reducir el grupo hasta obtener 4 candidatos</span>
-            </div>
-
-            <span class="filter-status pending">Pendiente</span>
-          </div>
-
-        </div>
-
-        <button id="btnAnalizar" class="btn btn-dark">
-          Analizar números
-        </button>
-
-      </section>
 
 
-      <!-- RESULTADOS -->
-      <section class="panel">
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
 
-        <div class="panel-header">
-          <div>
-            <span class="section-label">PREDICCIÓN</span>
-            <h2>Candidatos del día</h2>
-          </div>
-        </div>
+<script src="app.js"></script>
 
-        <div id="candidateNumbers" class="candidate-grid">
-
-          <div class="number-card empty">--</div>
-          <div class="number-card empty">--</div>
-          <div class="number-card empty">--</div>
-          <div class="number-card empty">--</div>
-
-        </div>
-
-        <div class="probability-box">
-          <span>Cobertura actual</span>
-          <strong id="coverageValue">0%</strong>
-          <small>
-            Porcentaje de números seleccionados dentro del universo 00–99.
-          </small>
-        </div>
-
-      </section>
-
-
-      <!-- HISTORIAL -->
-      <section class="panel">
-
-        <div class="panel-header">
-          <div>
-            <span class="section-label">DATOS</span>
-            <h2>Últimos sorteos registrados</h2>
-          </div>
-
-          <button id="btnReset" class="btn-reset">
-            Reset
-          </button>
-        </div>
-
-        <div class="table-wrapper">
-
-          <table>
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>1ra</th>
-                <th>2da</th>
-                <th>3ra</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-
-            <tbody id="historialBody">
-
-              <tr class="empty-row">
-                <td colspan="5">
-                  Todavía no hay sorteos registrados.
-                </td>
-              </tr>
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </section>
-
-
-      <!-- RENDIMIENTO -->
-      <section class="panel">
-
-        <div class="panel-header">
-          <div>
-            <span class="section-label">PRUEBA</span>
-            <h2>Rendimiento del método</h2>
-          </div>
-        </div>
-
-        <div class="performance-grid">
-
-          <div class="performance-card">
-            <span>Predicciones realizadas</span>
-            <strong id="totalPredicciones">0</strong>
-          </div>
-
-          <div class="performance-card">
-            <span>Aciertos</span>
-            <strong id="totalAciertos">0</strong>
-          </div>
-
-          <div class="performance-card">
-            <span>Tasa de acierto</span>
-            <strong id="tasaAcierto">0%</strong>
-          </div>
-
-        </div>
-
-      </section>
-
-
-    </main>
-
-  </div>
-
-  <script src="app.js"></script>
 
 </body>
+
 </html>
