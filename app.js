@@ -500,12 +500,11 @@ function analizarNumeros() {
 
 // =============================================
 // FILTRO 2
-// TOMAR LAS 3RAS DE LOS ÚLTIMOS 7 SORTEOS
-// DEL BLOQUE HISTÓRICO ANALIZADO
+// COMPARAR LOS RESTANTES CON LAS 3RAS
+// DE LOS ÚLTIMOS 30 SORTEOS
 // =============================================
 
-
-// Ordenamos los sorteos del más reciente al más antiguo
+// Ordenar los sorteos del más reciente al más antiguo
 const sorteosOrdenados =
     [...sorteos90Dias].sort(
         (a, b) =>
@@ -514,23 +513,22 @@ const sorteosOrdenados =
     );
 
 
-// Tomamos únicamente los 7 sorteos más recientes
-const ultimos7Sorteos =
-    sorteosOrdenados.slice(0, 7);
+// Tomar solamente los últimos 30 sorteos
+const ultimos30Sorteos =
+    sorteosOrdenados.slice(0, 30);
 
 
-// Sacamos solamente sus terceras
+// Obtener las terceras de esos 30 sorteos
 const vistosTercera =
     new Set(
-        ultimos7Sorteos.map(
+        ultimos30Sorteos.map(
             sorteo => sorteo.tercera
         )
     );
 
 
-// De los números que sobrevivieron a 1ra y 2da,
-// quitamos únicamente los que aparecieron
-// como 3ra en esos últimos 7 sorteos
+// Comparar SOLAMENTE los números que
+// sobrevivieron al filtro de 1ra + 2da
 const filtro2 =
     filtro1.filter(numero =>
 
@@ -586,7 +584,7 @@ const filtro2 =
 
     console.log(
         "3ras analizadas:",
-        ultimos7Sorteos.map(
+        ultimos30Sorteos.map(
             sorteo => sorteo.tercera
         )
     );
