@@ -533,6 +533,114 @@
 
     </section>
 
+    <!-- =========================================
+     GUARDAR PREDICCIÓN
+========================================== -->
+
+<section class="panel">
+
+  <div class="panel-header">
+
+    <div>
+      <span class="section-label">REGISTRO</span>
+      <h2>Predicción actual</h2>
+    </div>
+
+  </div>
+
+
+  <p class="description">
+    Después de analizar los números, guarda la predicción
+    antes de conocer el próximo resultado.
+  </p>
+
+
+  <div id="prediccionActual" class="probability-box">
+
+    <span>Predicción sin guardar</span>
+
+    <strong id="estadoPrediccionActual">
+      Esperando análisis
+    </strong>
+
+    <small id="detallePrediccionActual">
+      Primero presiona "Analizar números".
+    </small>
+
+  </div>
+
+
+  <br>
+
+
+  <button
+    id="btnGuardarPrediccion"
+    class="btn btn-primary"
+    type="button"
+    disabled
+  >
+    Guardar esta predicción
+  </button>
+
+</section>
+
+
+
+<!-- =========================================
+     HISTORIAL DE PREDICCIONES
+========================================== -->
+
+<section class="panel">
+
+  <div class="panel-header">
+
+    <div>
+      <span class="section-label">SEGUIMIENTO</span>
+      <h2>Historial de predicciones</h2>
+    </div>
+
+  </div>
+
+
+  <p class="description">
+    Aquí podrás comprobar qué números predijo el sistema
+    antes de cada sorteo y si posteriormente hubo un acierto.
+  </p>
+
+
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>Fecha</th>
+          <th>Candidatos</th>
+          <th>Resultado</th>
+          <th>Estado</th>
+        </tr>
+
+      </thead>
+
+
+      <tbody id="historialPredicciones">
+
+        <tr class="empty-row">
+
+          <td colspan="4">
+            Todavía no hay predicciones guardadas.
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
 
 
     <!-- =========================================

@@ -5,6 +5,12 @@
 
 const STORAGE_SORTEOS = "lotopredict_sorteos";
 
+const STORAGE_PREDICCIONES = "lotopredict_predicciones";
+
+let predicciones = cargarPredicciones();
+
+let candidatosActuales = [];
+
 let sorteos = cargarSorteos();
 
 
@@ -29,6 +35,26 @@ const totalCandidatos = document.getElementById("totalCandidatos");
 const candidateNumbers = document.getElementById("candidateNumbers");
 const coverageValue = document.getElementById("coverageValue");
 
+const btnGuardarPrediccion =
+    document.getElementById("btnGuardarPrediccion");
+
+const estadoPrediccionActual =
+    document.getElementById("estadoPrediccionActual");
+
+const detallePrediccionActual =
+    document.getElementById("detallePrediccionActual");
+
+const historialPredicciones =
+    document.getElementById("historialPredicciones");
+
+const totalPredicciones =
+    document.getElementById("totalPredicciones");
+
+const totalAciertos =
+    document.getElementById("totalAciertos");
+
+const tasaAcierto =
+    document.getElementById("tasaAcierto");
 
 // =====================================================
 // FECHA DE HOY
@@ -255,6 +281,7 @@ function registrarSorteo() {
 
     actualizarResumen();
 
+    evaluarPredicciones();
 
 }
 
@@ -658,6 +685,9 @@ function mostrarCandidatos(candidatos) {
         );
 
     });
+
+    prepararPrediccion(candidatos);
+
 }
 
 function resetearSistema() {
@@ -696,6 +726,437 @@ function resetearSistema() {
 }
 
 // =====================================================
+// CARGAR PREDICCIONES
+// =====================================================
+
+function cargarPredicciones() {
+
+    try {
+
+        const datos =
+            localStorage.getItem(STORAGE_PREDICCIONES);
+
+        if (!datos) {
+            return [];
+        }
+
+        const resultado = JSON.parse(datos);
+
+        return Array.isArray(resultado)
+            ? resultado
+            : [];
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando predicciones:",
+            error
+        );
+
+        return [];
+    }
+}
+
+
+// =====================================================
+// GUARDAR PREDICCIONES EN STORAGE
+// =====================================================
+
+function guardarPrediccionesStorage() {
+
+    localStorage.setItem(
+        STORAGE_PREDICCIONES,
+        JSON.stringify(predicciones)
+    );
+}
+
+
+// =====================================================
+// PREPARAR PREDICCIÓN DESPUÉS DEL ANÁLISIS
+// =====================================================
+
+function prepararPrediccion(candidatos) {
+
+    candidatosActuales = [...candidatos];
+
+    if (candidatosActuales.length === 0) {
+
+        btnGuardarPrediccion.disabled = true;
+
+        estadoPrediccionActual.textContent =
+            "Sin candidatos";
+
+        detallePrediccionActual.textContent =
+            "El análisis no produjo números candidatos.";
+
+        return;
+    }
+
+
+    btnGuardarPrediccion.disabled = false;
+
+    estadoPrediccionActual.textContent =
+        `${candidatosActuales.length} candidatos listos`;
+
+    detallePrediccionActual.textContent =
+        candidatosActuales.join(", ");
+}
+
+
+// =====================================================
+// GUARDAR PREDICCIÓN
+// =====================================================
+
+function guardarPrediccionActual() {
+
+    if (candidatosActuales.length === 0) {
+        return;
+    }
+
+
+    // La predicción será para el sorteo de hoy
+    const fechaBase = new Date();
+
+    fechaBase.setHours(0, 0, 0, 0);
+
+    const year =
+        fechaBase.getFullYear();
+
+    const month =
+        String(
+            fechaBase.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            fechaBase.getDate()
+        ).padStart(2, "0");
+
+
+    const fechaPrediccion =
+        `${year}-${month}-${day}`;
+
+
+    // Evitar guardar dos predicciones
+    // para la misma fecha
+
+    const yaExiste =
+        predicciones.some(
+            p => p.fecha === fechaPrediccion
+        );
+
+
+    if (yaExiste) {
+
+        alert(
+            "Ya existe una predicción guardada para ese sorteo."
+        );
+
+        return;
+    }
+
+
+    const nuevaPrediccion = {
+
+        id: Date.now(),
+
+        fecha: fechaPrediccion,
+
+        candidatos:
+            [...candidatosActuales],
+
+        estado: "pendiente",
+
+        resultado: null,
+
+        aciertos: []
+
+    };
+
+
+    predicciones.push(
+        nuevaPrediccion
+    );
+
+
+    guardarPrediccionesStorage();
+
+    renderizarPredicciones();
+
+    actualizarRendimiento();
+
+
+    btnGuardarPrediccion.disabled = true;
+
+    estadoPrediccionActual.textContent =
+        "Predicción guardada";
+
+    detallePrediccionActual.textContent =
+        `Para ${formatearFecha(fechaPrediccion)}: ${candidatosActuales.join(", ")}`;
+}
+
+
+// =====================================================
+// EVALUAR PREDICCIONES CONTRA RESULTADOS
+// =====================================================
+
+function evaluarPredicciones() {
+
+    let huboCambio = false;
+
+
+    predicciones.forEach(prediccion => {
+
+        if (
+            prediccion.estado !== "pendiente"
+        ) {
+            return;
+        }
+
+
+        const sorteo =
+            sorteos.find(
+                s => s.fecha === prediccion.fecha
+            );
+
+
+        if (!sorteo) {
+            return;
+        }
+
+
+        const aciertos = [];
+
+
+        if (
+            prediccion.candidatos.includes(
+                sorteo.primera
+            )
+        ) {
+
+            aciertos.push({
+                numero: sorteo.primera,
+                posicion: "1ra"
+            });
+        }
+
+
+        if (
+            prediccion.candidatos.includes(
+                sorteo.segunda
+            )
+        ) {
+
+            aciertos.push({
+                numero: sorteo.segunda,
+                posicion: "2da"
+            });
+        }
+
+
+        if (
+            prediccion.candidatos.includes(
+                sorteo.tercera
+            )
+        ) {
+
+            aciertos.push({
+                numero: sorteo.tercera,
+                posicion: "3ra"
+            });
+        }
+
+
+        prediccion.resultado = {
+            primera: sorteo.primera,
+            segunda: sorteo.segunda,
+            tercera: sorteo.tercera
+        };
+
+
+        prediccion.aciertos =
+            aciertos;
+
+
+        prediccion.estado =
+            aciertos.length > 0
+                ? "acierto"
+                : "fallo";
+
+
+        huboCambio = true;
+
+    });
+
+
+    if (huboCambio) {
+
+        guardarPrediccionesStorage();
+
+        renderizarPredicciones();
+
+        actualizarRendimiento();
+    }
+}
+
+
+// =====================================================
+// MOSTRAR HISTORIAL DE PREDICCIONES
+// =====================================================
+
+function renderizarPredicciones() {
+
+    historialPredicciones.innerHTML = "";
+
+
+    if (predicciones.length === 0) {
+
+        historialPredicciones.innerHTML = `
+
+            <tr class="empty-row">
+
+                <td colspan="4">
+                    Todavía no hay predicciones guardadas.
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+    }
+
+
+    const ordenadas =
+        [...predicciones].sort(
+            (a, b) =>
+                new Date(b.fecha) -
+                new Date(a.fecha)
+        );
+
+
+    ordenadas.forEach(prediccion => {
+
+        const fila =
+            document.createElement("tr");
+
+
+        let resultadoTexto =
+            "Pendiente";
+
+
+        if (prediccion.resultado) {
+
+            resultadoTexto =
+                `${prediccion.resultado.primera} - ` +
+                `${prediccion.resultado.segunda} - ` +
+                `${prediccion.resultado.tercera}`;
+        }
+
+
+        let estadoTexto =
+            "⏳ Pendiente";
+
+
+        if (
+            prediccion.estado === "acierto"
+        ) {
+
+            const detalles =
+                prediccion.aciertos
+                    .map(
+                        acierto =>
+                            `${acierto.numero} (${acierto.posicion})`
+                    )
+                    .join(", ");
+
+
+            estadoTexto =
+                `✅ ${detalles}`;
+        }
+
+
+        if (
+            prediccion.estado === "fallo"
+        ) {
+
+            estadoTexto =
+                "❌ Fallo";
+        }
+
+
+        fila.innerHTML = `
+
+            <td>
+                ${formatearFecha(prediccion.fecha)}
+            </td>
+
+            <td>
+                ${prediccion.candidatos.join(", ")}
+            </td>
+
+            <td>
+                ${resultadoTexto}
+            </td>
+
+            <td>
+                ${estadoTexto}
+            </td>
+
+        `;
+
+
+        historialPredicciones.appendChild(
+            fila
+        );
+
+    });
+}
+
+
+// =====================================================
+// ACTUALIZAR RENDIMIENTO
+// =====================================================
+
+function actualizarRendimiento() {
+
+    const evaluadas =
+        predicciones.filter(
+            p =>
+                p.estado === "acierto" ||
+                p.estado === "fallo"
+        );
+
+
+    const aciertos =
+        predicciones.filter(
+            p =>
+                p.estado === "acierto"
+        );
+
+
+    totalPredicciones.textContent =
+        evaluadas.length;
+
+
+    totalAciertos.textContent =
+        aciertos.length;
+
+
+    const porcentaje =
+        evaluadas.length === 0
+            ? 0
+            : (
+                aciertos.length /
+                evaluadas.length
+              ) * 100;
+
+
+    tasaAcierto.textContent =
+        `${porcentaje.toFixed(1)}%`;
+}
+
+// =====================================================
 // EVENTOS
 // =====================================================
 
@@ -704,6 +1165,10 @@ btnGuardarSorteo.addEventListener(
     registrarSorteo
 );
 
+btnGuardarPrediccion.addEventListener(
+    "click",
+    guardarPrediccionActual
+);
 
 btnAnalizar.addEventListener(
     "click",
@@ -724,3 +1189,9 @@ establecerFechaActual();
 renderizarHistorial();
 
 actualizarResumen();
+
+renderizarPredicciones();
+
+evaluarPredicciones();
+
+actualizarRendimiento();
