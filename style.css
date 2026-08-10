@@ -305,6 +305,36 @@ button{
 
 .table-wrapper{
   overflow-x:auto;
+  overflow-y:auto;
+
+  /* altura para mostrar aprox. 10 registros */
+  max-height:720px;
+
+  border-radius:14px;
+
+  scrollbar-width:thin;
+}
+
+.table-wrapper::-webkit-scrollbar{
+  width:7px;
+  height:7px;
+}
+
+.table-wrapper::-webkit-scrollbar-track{
+  background:#0f172a;
+  border-radius:10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb{
+  background:#475569;
+  border-radius:10px;
+}
+
+table thead th{
+  position:sticky;
+  top:0;
+  background:#111827;
+  z-index:5;
 }
 
 table{
