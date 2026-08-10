@@ -260,6 +260,18 @@ function registrarSorteo() {
 
     };
 
+// =====================================================
+// LÍMITE MÁXIMO DE 90 SORTEOS
+// =====================================================
+
+if (sorteos.length >= 90) {
+
+    alert(
+        "Ya tienes 90 sorteos registrados. No puedes agregar un sorteo número 91."
+    );
+
+    return;
+}
 
     sorteos.push(nuevoSorteo);
 
@@ -275,14 +287,13 @@ function registrarSorteo() {
 
     guardarEnStorage();
 
-    limpiarPremios();
-
     renderizarHistorial();
 
     actualizarResumen();
 
     evaluarPredicciones();
 
+    limpiarPremios();
 }
 
 
