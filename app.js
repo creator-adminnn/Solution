@@ -5,6 +5,8 @@
 
 const STORAGE_SORTEOS = "lotopredict_sorteos";
 
+const STORAGE_ARCHIVADOS = "lotopredict_sorteos_archivados";
+
 const STORAGE_PREDICCIONES = "lotopredict_predicciones";
 
 let predicciones = cargarPredicciones();
@@ -13,6 +15,7 @@ let candidatosActuales = [];
 
 let sorteos = cargarSorteos();
 
+let sorteosArchivados = cargarArchivados();
 
 // =====================================================
 // ELEMENTOS
@@ -157,6 +160,51 @@ function guardarEnStorage() {
     );
 }
 
+// =====================================================
+// CARGAR SORTEOS ARCHIVADOS
+// =====================================================
+
+function cargarArchivados() {
+
+    try {
+
+        const datos =
+            localStorage.getItem(STORAGE_ARCHIVADOS);
+
+        if (!datos) {
+            return [];
+        }
+
+        const resultado =
+            JSON.parse(datos);
+
+        return Array.isArray(resultado)
+            ? resultado
+            : [];
+
+    } catch (error) {
+
+        console.error(
+            "Error cargando sorteos archivados:",
+            error
+        );
+
+        return [];
+    }
+}
+
+
+// =====================================================
+// GUARDAR ARCHIVADOS
+// =====================================================
+
+function guardarArchivadosStorage() {
+
+    localStorage.setItem(
+        STORAGE_ARCHIVADOS,
+        JSON.stringify(sorteosArchivados)
+    );
+}
 
 // =====================================================
 // NORMALIZAR NÚMERO
@@ -261,16 +309,37 @@ function registrarSorteo() {
     };
 
 // =====================================================
-// LÍMITE MÁXIMO DE 90 SORTEOS
+// VENTANA MÓVIL DE 90 SORTEOS
 // =====================================================
 
 if (sorteos.length >= 90) {
 
-    alert(
-        "Ya tienes 90 sorteos registrados. No puedes agregar un sorteo número 91."
+    // Ordenar del más viejo al más nuevo
+    sorteos.sort(
+        (a, b) =>
+            new Date(a.fecha) -
+            new Date(b.fecha)
     );
 
-    return;
+    // Sacar el más viejo
+    const sorteoViejo =
+        sorteos.shift();
+
+    // Guardarlo en respaldo
+    if (sorteoViejo) {
+
+        sorteosArchivados.push(
+            sorteoViejo
+        );
+
+        sorteosArchivados.sort(
+            (a, b) =>
+                new Date(b.fecha) -
+                new Date(a.fecha)
+        );
+
+        guardarArchivadosStorage();
+    }
 }
 
     sorteos.push(nuevoSorteo);
@@ -389,6 +458,50 @@ function eliminarSorteo(id) {
     sorteos = sorteos.filter(
         sorteo => sorteo.id !== id
     );
+
+
+    // =============================================
+    // SI HAY MENOS DE 90, RECUPERAR UNO DEL RESPALDO
+    // =============================================
+
+    if (
+        sorteos.length < 90 &&
+        sorteosArchivados.length > 0
+    ) {
+
+        // Ordenar archivados del más reciente
+        // al más antiguo
+        sorteosArchivados.sort(
+            (a, b) =>
+                new Date(b.fecha) -
+                new Date(a.fecha)
+        );
+
+
+        // Recuperar el archivado más reciente
+        const recuperado =
+            sorteosArchivados.shift();
+
+
+        if (recuperado) {
+
+            sorteos.push(
+                recuperado
+            );
+        }
+
+
+        guardarArchivadosStorage();
+    }
+
+
+    // Ordenar activos del más reciente al más antiguo
+    sorteos.sort(
+        (a, b) =>
+            new Date(b.fecha) -
+            new Date(a.fecha)
+    );
+
 
     guardarEnStorage();
 
@@ -714,8 +827,12 @@ function resetearSistema() {
     // Vaciar memoria
     sorteos = [];
 
+    sorteosArchivados = [];
+
     // Eliminar almacenamiento
     localStorage.removeItem(STORAGE_SORTEOS);
+
+    localStorage.removeItem(STORAGE_ARCHIVADOS);
 
     // Actualizar interfaz
     renderizarHistorial();
